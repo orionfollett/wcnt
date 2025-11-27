@@ -9,9 +9,10 @@ pub fn main() !void {
 
     const f = try std.fs.cwd().openFile(file_name, .{});
     defer f.close();
-
     const s = try f.readToEndAlloc(a, 1000000000);
     defer a.free(s);
-
-    std.debug.print("{s}", .{s});
+    var it = std.mem.tokenizeAny(u8, s, "!@#$%^&*()-+ /,|{}[]\n\t=`\"\'");
+    while (it.next()) |token| {
+        std.debug.print(" {s} ", .{token});
+    }
 }
