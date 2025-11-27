@@ -1,5 +1,5 @@
 const std = @import("std");
-
+const lib = @import("lib/lib.zig");
 pub fn main() void {
-    std.debug.print("Hello world\n", .{});
+    lib.print_hello("hello world\n");
 }
