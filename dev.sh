@@ -1,3 +1,4 @@
 run(){
-    zig build run $1
+    zig build
+    ./zig-out/bin/wcnt $1 $2 $3 $4 $5
 }
