@@ -1,4 +1,5 @@
 const std = @import("std");
+const print = std.debug.print;
 
 const WordCount = struct {
     count: u32,
@@ -9,9 +10,14 @@ fn WordCountLessThan(_: void, lhs: WordCount, rhs: WordCount) bool {
 }
 
 pub fn main() !void {
-    var aa = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer _ = aa.deinit();
-    const a = aa.allocator();
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer _ = arena.deinit();
+    const a = arena.allocator();
+
+    var args = try std.process.argsWithAllocator(a);
+    while (args.next()) |arg| {
+        print("{s}\n", .{arg});
+    }
 
     const file_name = "README.md";
     const f = try std.fs.cwd().openFile(file_name, .{});
@@ -46,7 +52,7 @@ pub fn main() !void {
     var start = word_count_list.items.len - 1;
     while (start >= end) {
         const i = word_count_list.items[start];
-        std.debug.print("{s} {d}\n", .{ i.word, i.count });
+        print("{s} {d}\n", .{ i.word, i.count });
         start -= 1;
     }
 }
