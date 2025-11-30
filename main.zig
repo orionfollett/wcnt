@@ -1,6 +1,6 @@
 const std = @import("std");
-const printf = std.debug.print;
-const str = []const u8;
+const print = std.debug.print;
+
 const WordCount = struct {
     count: u32,
     word: []const u8,
@@ -47,9 +47,16 @@ pub fn main() !void {
         }
     }
 
-    printf("CLI Args {any}\n", .{query});
+    print("CLI Args {any}\n", .{query});
 
     const file_name = "README.md";
+    const cwd = std.fs.cwd();
+    var dir = try cwd.openDir(".", .{ .iterate = true });
+    var cwd_it = try dir.walk(a);
+    while (cwd_it.next() catch null) |d| {
+        print("{s} {any}", .{ d.basename, d.kind });
+    }
+
     const f = try std.fs.cwd().openFile(file_name, .{});
     defer f.close();
     const s = try f.readToEndAlloc(a, 1000000000);
@@ -82,7 +89,12 @@ pub fn main() !void {
     var start = word_count_list.items.len - 1;
     while (start >= end) {
         const i = word_count_list.items[start];
-        printf("{s} {d}\n", .{ i.word, i.count });
+        print("{s} {d}\n", .{ i.word, i.count });
         start -= 1;
     }
 }
+
+// TODO:
+// Make the dir walk recursive
+// make the file reading multi threaded
+// actually use the parsed args
